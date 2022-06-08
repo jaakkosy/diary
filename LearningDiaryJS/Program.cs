@@ -71,27 +71,13 @@ namespace LearningDiaryJ
             Console.WriteLine("Give topic description:");
             string description = Console.ReadLine();
 
-
             Console.WriteLine("Estimate time consumption:");
-            double estimatedTimeToMaster;
-            while (true)
-            {
-                try
-                {
-                    estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
-                    continue;
-                }
-                break;
-            }
-
-            Console.WriteLine("Enter the time spent:");
+            double estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
+               
             double timeSpent;
             while (true)
             {
+                Console.WriteLine("Enter the time spent:");
                 try
                 {
                     timeSpent = Convert.ToDouble(Console.ReadLine());
@@ -107,8 +93,22 @@ namespace LearningDiaryJ
             Console.WriteLine("Give possible source:");
             string source = Console.ReadLine();
 
-            Console.WriteLine("Enter the time of the study in the format of YYYY-MM-DD:");
-            DateTime startLearningDate = Convert.ToDateTime(Console.ReadLine());
+            DateTime startLearningDate = new DateTime();
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter the beginning time of the study in the format of YYYY-MM-DD:");
+                    startLearningDate = Convert.ToDateTime(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form");
+                    continue;
+
+                }
+                break;
+            }
 
             Console.WriteLine("Are you still studying? (yes/no)");
             string progressInput = Console.ReadLine();
@@ -122,10 +122,22 @@ namespace LearningDiaryJ
                 inProgress = false;
             }
 
-            Console.WriteLine("Enter completion time of the study in the format of YYYY-MM-DD:");
-            DateTime completionDate = Convert.ToDateTime(Console.ReadLine());
+            DateTime completionDate = new DateTime();
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("Enter completion time of the study in the format of YYYY-MM-DD:");
+                    completionDate = Convert.ToDateTime(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form");
+                    continue;
 
-
+                }
+                break;
+            }
 
             Topic topicToAdd = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, 
                 source, startLearningDate, inProgress, completionDate);

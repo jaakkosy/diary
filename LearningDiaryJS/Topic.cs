@@ -4,27 +4,27 @@ namespace LearningDiaryJ
 {
     class Topic
     {
-        public int id;
-        public string title;
-        public string description;
-        public double estimate;
-        public double timespent;
-        public string source;
-        public DateTime startday;
-        public bool progress;
-        public DateTime completionday;
+        public int Id;
+        public string Title;
+        public string Description;
+        public double EstimatedTimeToMaster;
+        public double TimeSpent;
+        public string Source;
+        public DateTime StartLearningDate;
+        public bool InProgress;
+        public DateTime CompletionDate;
 
-        public Topic(int aId, string aTitle, string aDescription, double aEstimate, double aTimespent, string aSource, DateTime adayOfStart, bool aProgress, DateTime adayOfCompletion)
+        public Topic(int id, string title, string description, double estimatedTimeToMaster, double timeSpent, string source, DateTime startLearningDate, bool inProgress, DateTime completionDate)
         {
-            id = aId;
-            title = aTitle;
-            description = aDescription;
-            estimate = aEstimate;
-            timespent = aTimespent;
-            source = aSource;
-            startday = adayOfStart;
-            progress = aProgress;
-            completionday = adayOfCompletion;
+            Id = id;
+            Title = title;
+            Description = description;
+            EstimatedTimeToMaster = estimatedTimeToMaster;
+            TimeSpent = timeSpent;
+            Source = source;
+            StartLearningDate = startLearningDate;
+            InProgress = inProgress;
+            CompletionDate = completionDate;
         }
 
         public override string ToString()
@@ -37,8 +37,8 @@ namespace LearningDiaryJ
                                  "Source material: {5}\n" +
                                  "Started learning: {6}\n" +
                                  "In progress: {7}\n" +
-                                 "Estimated completion: {8}", id, Title, Description, EstimatedTimeToMaster, TimeSpent,
-                Source, StartLearningDate.Date, InProgress, CompletionDate.Date);
+                                 "Estimated completion: {8}", Id, Title, Description, EstimatedTimeToMaster, TimeSpent,
+                Source, StartLearningDate, InProgress, CompletionDate);
         }
     }
 }
