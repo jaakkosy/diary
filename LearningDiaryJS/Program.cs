@@ -71,11 +71,38 @@ namespace LearningDiaryJ
             Console.WriteLine("Give topic description:");
             string description = Console.ReadLine();
 
+
             Console.WriteLine("Estimate time consumption:");
-            double estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
+            double estimatedTimeToMaster;
+            while (true)
+            {
+                try
+                {
+                    estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
+                    continue;
+                }
+                break;
+            }
 
             Console.WriteLine("Enter the time spent:");
-            double timeSpent = Convert.ToDouble(Console.ReadLine());
+            double timeSpent;
+            while (true)
+            {
+                try
+                {
+                    timeSpent = Convert.ToDouble(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
+                    continue;
+                }
+                break;
+            }
 
             Console.WriteLine("Give possible source:");
             string source = Console.ReadLine();
@@ -86,7 +113,7 @@ namespace LearningDiaryJ
             Console.WriteLine("Are you still studying? (yes/no)");
             string progressInput = Console.ReadLine();
             bool inProgress = false;
-            if (progressInput == "yes" || progressInput == "Yes" || progressInput == "YES")
+            if (progressInput.ToLower() == "yes")
             {
                 inProgress = true;
             }
