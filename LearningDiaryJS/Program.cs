@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LearningDiaryJ
 {
@@ -7,60 +8,102 @@ namespace LearningDiaryJ
     {
         static void Main(string[] args)
         {
+            List<Topic> topics = new List<Topic>();
 
-            Console.WriteLine("Give topic identifier:");
-            int idInput = Convert.ToInt32(Console.ReadLine());
+            while (true)
+            {
+                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics or Choose 0 to quit.");
+
+                int userChoice;
+
+                try
+                {
+                    userChoice = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form.");
+                    continue;
+                }
+
+                if (userChoice == 0)
+                {
+                    break;
+                }
+
+                else if (userChoice == 2)
+                {
+                    foreach (Topic topic in topics)
+                    {
+                        Console.WriteLine(topic);
+                    }
+                }
+                else if (userChoice == 1)
+                {
+                    topics.Add(AddTopic());
+                    Console.WriteLine("Topic added to list.");
+                }
+            }
+        }
+
+        static Topic AddTopic()
+        {
+            int id;
+
+            while (true)
+            {
+                Console.WriteLine("Give topic id:");
+                try
+                {
+                    id = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Give input in correct form");
+                    continue;
+                }
+                break;
+            }
 
             Console.WriteLine("Give topic title:");
-            string titleInput = Console.ReadLine();
+            string title = Console.ReadLine();
 
             Console.WriteLine("Give topic description:");
-            string descriptionInput = Console.ReadLine();
+            string description = Console.ReadLine();
 
             Console.WriteLine("Estimate time consumption:");
-            double timeEstimateInput = Convert.ToDouble(Console.ReadLine());
+            double estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Enter the time spent:");
-            double timeSpentInput = Convert.ToDouble(Console.ReadLine());
+            double timeSpent = Convert.ToDouble(Console.ReadLine());
 
             Console.WriteLine("Give possible source:");
-            string sourceInput = Console.ReadLine();
+            string source = Console.ReadLine();
 
             Console.WriteLine("Enter the time of the study in the format of YYYY-MM-DD:");
-            DateTime dayOfStart = Convert.ToDateTime(Console.ReadLine());
+            DateTime startLearningDate = Convert.ToDateTime(Console.ReadLine());
 
             Console.WriteLine("Are you still studying? (yes/no)");
             string progressInput = Console.ReadLine();
-            bool Boolean = false;
+            bool inProgress = false;
             if (progressInput == "yes" || progressInput == "Yes" || progressInput == "YES")
             {
-                Boolean = true;
+                inProgress = true;
             }
             else
             {
-                Boolean = false;
+                inProgress = false;
             }
 
             Console.WriteLine("Enter completion time of the study in the format of YYYY-MM-DD:");
-            DateTime dayOfCompletion = Convert.ToDateTime(Console.ReadLine());
+            DateTime completionDate = Convert.ToDateTime(Console.ReadLine());
 
 
 
-            Diary diary1 = new Diary(idInput, titleInput, descriptionInput, timeEstimateInput, timeSpentInput, sourceInput, dayOfStart, Boolean, dayOfCompletion);
+            Topic topicToAdd = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, 
+                source, startLearningDate, inProgress, completionDate);
 
-            diary1.id = idInput;
-            diary1.title = titleInput;
-            diary1.description = descriptionInput;
-            diary1.estimate = timeEstimateInput;
-            diary1.timespent = timeSpentInput;
-            diary1.source = sourceInput;
-            diary1.startday = dayOfStart;
-            diary1.progress = Boolean;
-            diary1.completionday = dayOfCompletion;
-
-            Console.WriteLine(diary1.completionday);
-            Console.WriteLine(diary1.progress);
-
+            return topicToAdd;
         }
     }
 }
