@@ -26,19 +26,21 @@ namespace LearningDiaryJ
             InProgress = inProgress;
             CompletionDate = completionDate;
         }
+        
+        // Forming data
 
         public override string ToString()
         {
             return string.Format("ID : {0}\n" +
                                  "Title: {1}\n" +
                                  "Description: {2}\n" +
-                                 "Time to master: {3}\n" +
-                                 "Time spent: {4}\n" +
+                                 "Estimated time to master: {3}\n" +
+                                 "Time spent: {4} hours\n" +
                                  "Source material: {5}\n" +
                                  "Started learning: {6}\n" +
                                  "In progress: {7}\n" +
-                                 "Estimated completion: {8}", Id, Title, Description, EstimatedTimeToMaster, TimeSpent,
-                Source, StartLearningDate, InProgress, CompletionDate);
+                                 "Estimated completion: {8}\n", Id, Title, Description, EstimatedTimeToMaster, TimeSpent,
+                Source, StartLearningDate.ToShortDateString(), InProgress, CompletionDate.ToShortDateString());
         }
     }
 }

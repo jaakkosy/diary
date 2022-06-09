@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace LearningDiaryJ
 {
     class Program
     {
         static void Main(string[] args)
-        {
+        {   
+            // Defining file path
             List<Topic> topics = new List<Topic>();
+            string filePath = @"C:\Users\JaakkoSyrjämäki\source\repos\LearningDiaryJS\learningdiary.txt";
+            List<string> lines = File.ReadAllLines(filePath).ToList();
 
+            // Asking user choice
             while (true)
             {
                 Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics or Choose 0 to quit.");
@@ -36,6 +41,17 @@ namespace LearningDiaryJ
                     foreach (Topic topic in topics)
                     {
                         Console.WriteLine(topic);
+                        lines.Add(Convert.ToString(topic.Id));
+                        lines.Add(topic.Title);
+                        lines.Add(topic.Description);
+                        lines.Add(Convert.ToString(topic.EstimatedTimeToMaster));
+                        lines.Add(Convert.ToString(topic.TimeSpent));
+                        lines.Add(topic.Source);
+                        lines.Add(Convert.ToString(topic.StartLearningDate.ToShortDateString()));
+                        lines.Add(Convert.ToString(topic.InProgress));
+                        lines.Add(Convert.ToString(topic.CompletionDate.ToShortDateString()));
+                        lines.Add("");
+                        File.WriteAllLines(filePath, lines);
                     }
                 }
                 else if (userChoice == 1)
@@ -46,6 +62,7 @@ namespace LearningDiaryJ
             }
         }
 
+        // Collecting data from user
         static Topic AddTopic()
         {
             int id;
@@ -71,16 +88,14 @@ namespace LearningDiaryJ
             Console.WriteLine("Give topic description:");
             string description = Console.ReadLine();
 
-            Console.WriteLine("Estimate time consumption:");
-            double estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
-               
-            double timeSpent;
+
+            double estimatedTimeToMaster;
             while (true)
             {
-                Console.WriteLine("Enter the time spent:");
+                Console.WriteLine("Estimate time consumption to master subject:");
                 try
                 {
-                    timeSpent = Convert.ToDouble(Console.ReadLine());
+                    estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
                 }
                 catch (Exception)
                 {
@@ -89,7 +104,7 @@ namespace LearningDiaryJ
                 }
                 break;
             }
-
+            
             Console.WriteLine("Give possible source:");
             string source = Console.ReadLine();
 
@@ -110,12 +125,28 @@ namespace LearningDiaryJ
                 break;
             }
 
+            double timeSpent = 0;
+
             Console.WriteLine("Are you still studying? (yes/no)");
             string progressInput = Console.ReadLine();
-            bool inProgress = false;
+            bool inProgress = (progressInput.ToLower() == "yes");
             if (progressInput.ToLower() == "yes")
             {
                 inProgress = true;
+                while (true)
+                {
+                    Console.WriteLine("Enter the time spent:");
+                    try
+                    {
+                        timeSpent = Convert.ToDouble(Console.ReadLine());
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
+                        continue;
+                    }
+                    break;
+                }
             }
             else
             {
@@ -123,26 +154,57 @@ namespace LearningDiaryJ
             }
 
             DateTime completionDate = new DateTime();
-            while (true)
+
+            if (inProgress == false)
             {
-                try
+                while (true)
                 {
                     Console.WriteLine("Enter completion time of the study in the format of YYYY-MM-DD:");
-                    completionDate = Convert.ToDateTime(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form");
-                    continue;
+                    try
+                    {
+                        completionDate = Convert.ToDateTime(Console.ReadLine());
 
+                        TimeSpan difference = completionDate.Subtract(startLearningDate);
+                        timeSpent = (double)Convert.ToDecimal(difference.TotalHours);
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Give input in correct form");
+                        continue;
+                    }
+                    break;
                 }
-                break;
             }
 
+            if (inProgress == true)
+            {
+                while (true)
+                {
+                    Console.WriteLine("Estimate completion time of the study in the format of YYYY-MM-DD:");
+                    try
+                    {
+                        completionDate = Convert.ToDateTime(Console.ReadLine());
+                        
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Give input in correct form");
+                        continue;
+                    }
+                    break;
+                }
+            }
+
+            // giving collected data to class
+            
             Topic topicToAdd = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, 
                 source, startLearningDate, inProgress, completionDate);
 
             return topicToAdd;
         }
+
+        
+
+        
     }
 }
