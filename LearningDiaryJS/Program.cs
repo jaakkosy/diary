@@ -207,7 +207,6 @@ namespace LearningDiaryJ
             {
                 inProgress = false;
             }
-
             return inProgress;
         }
 
@@ -256,12 +255,10 @@ namespace LearningDiaryJ
                     {
                         Console.WriteLine("Which field would you like to edit?");
                         string whichField = Console.ReadLine();
-                        Console.WriteLine("Give new value to the field");
-                        string newValue = Console.ReadLine();
 
                         if (whichField.ToLower() == "id")
                         {
-                            topic.Id = Convert.ToInt32(newValue);
+                            topic.Id = GetId();
                         }
                         else if (whichField.ToLower() == "title")
                         {
@@ -269,31 +266,31 @@ namespace LearningDiaryJ
                         }
                         else if (whichField.ToLower() == "description")
                         {
-                            topic.Description = newValue;
+                            topic.Description = GetDescription();
                         }
                         else if (whichField.ToLower() == "time consumption")
                         {
-                            topic.EstimatedTimeToMaster = Convert.ToDouble(newValue);
+                            topic.EstimatedTimeToMaster = GetEstimatedTime();
                         }
                         else if (whichField.ToLower() == "source")
                         {
-                            topic.Source = newValue;
+                            topic.Source = GetSource();
                         }
                         else if (whichField.ToLower() == "beginning date")
                         {
-                            topic.StartLearningDate = Convert.ToDateTime(newValue);
+                            topic.StartLearningDate = GetStartDate();
                         }
                         else if (whichField.ToLower() == "progress")
                         {
-                            topic.InProgress = Convert.ToBoolean(newValue);
+                            topic.InProgress = GetProgress();
                         }
                         else if (whichField.ToLower() == "time spent")
                         {
-                            topic.TimeSpent = Convert.ToDouble(newValue);
+                            topic.TimeSpent = GetTimeSpent();
                         }
                         else if (whichField.ToLower() == "completion date")
                         {
-                            topic.CompletionDate = Convert.ToDateTime(newValue);
+                            topic.CompletionDate = GetCompletionDate(topic.InProgress,topic.TimeSpent,topic.EstimatedTimeToMaster,topic.StartLearningDate);
                         }
                     }
                     else if (editOrDeleteQuestion == "d")
