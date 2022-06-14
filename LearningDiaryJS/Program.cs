@@ -215,13 +215,11 @@ namespace LearningDiaryJ
             if (inProgress == false)
             {
                 var completionDate = StartLearningDate.AddDays(timeSpent);
-                Console.WriteLine(completionDate);
                 return completionDate;
             }
             else
             {
                 var completionEstimated = StartLearningDate.AddDays(estimate);
-                Console.WriteLine(completionEstimated);
                 return completionEstimated;
             }
         }
