@@ -17,7 +17,7 @@ namespace LearningDiaryJ
             // Asking user choice
             while (true)
             {
-                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics or Choose 0 to quit.");
+                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit topics or Choose 0 to quit.");
 
                 int userChoice;
 
@@ -58,6 +58,12 @@ namespace LearningDiaryJ
                 {
                     topics.Add(AddTopic());
                     Console.WriteLine("Topic added to list.");
+                }
+
+                else if (userChoice == 3)
+                {
+                    FindTopic(topics);
+                    Console.WriteLine("Testi");
                 }
             }
         }
@@ -203,8 +209,73 @@ namespace LearningDiaryJ
             return topicToAdd;
         }
 
-        
 
-        
+        public static void FindTopic(List<Topic> topics)
+        {
+            Console.WriteLine("Search for topics by ID:");
+            int idSearch = Convert.ToInt32(Console.ReadLine());
+            foreach (var topic in topics)
+            {
+                if (topic.Id == idSearch)
+                {
+                    Console.WriteLine("Topic found!");
+                    Console.WriteLine();
+                    Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
+                    Console.WriteLine();
+                    string editOrDeleteQuestion = Console.ReadLine();
+                    if (editOrDeleteQuestion.ToLower() == "e")
+                    {
+                        Console.WriteLine("Which field would you like to edit?");
+                        string whichField = Console.ReadLine();
+                        Console.WriteLine("Give new value to the field");
+                        string newValue = Console.ReadLine();
+
+                        if (whichField.ToLower() == "id")
+                        {
+                            topic.Id = Convert.ToInt32(newValue);
+                        }
+                        else if (whichField.ToLower() == "title")
+                        {
+                            topic.Title = newValue;
+                        }
+                        else if (whichField.ToLower() == "description")
+                        {
+                            topic.Description = newValue;
+                        }
+                        else if (whichField.ToLower() == "time consumption")
+                        {
+                            topic.EstimatedTimeToMaster = Convert.ToDouble(newValue);
+                        }
+                        else if (whichField.ToLower() == "source")
+                        {
+                            topic.Source = newValue;
+                        }
+                        else if (whichField.ToLower() == "beginning date")
+                        {
+                            topic.StartLearningDate = Convert.ToDateTime(newValue);
+                        }
+                        else if (whichField.ToLower() == "progress")
+                        {
+                            topic.InProgress = Convert.ToBoolean(newValue);
+                        }
+                        else if (whichField.ToLower() == "time spent")
+                        {
+                            topic.TimeSpent = Convert.ToDouble(newValue);
+                        }
+                        else if (whichField.ToLower() == "completion date")
+                        {
+                            topic.CompletionDate = Convert.ToDateTime(newValue);
+                        }
+                    }
+                    else if (editOrDeleteQuestion == "d")
+                    {
+                        Console.WriteLine("Monesko Merkintä poistetaan?");
+                        int testi = Convert.ToInt32(Console.ReadLine());
+                        topics.RemoveAt(testi);
+                    }
+                    break;
+                }
+            }
+        }
     }
 }
