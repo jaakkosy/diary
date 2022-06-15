@@ -14,6 +14,7 @@ namespace LearningDiaryJ
         public bool InProgress;
         public DateTime CompletionDate;
 
+
         public Topic(int id, string title, string description, double estimatedTimeToMaster, double timeSpent, string source, DateTime startLearningDate, bool inProgress, DateTime completionDate)
         {
             Id = id;

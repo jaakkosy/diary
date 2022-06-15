@@ -66,7 +66,38 @@ namespace LearningDiaryJ
                     Console.WriteLine("Testi");
                 }
             }
+            WriteToFile(topics, "learningdiaryaw.csv");
         }
+
+        private static void WriteToFile(List<Topic> topics, string filepath)
+        {
+            try
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@filepath, true))
+                {
+                    foreach (var topic in topics)
+                    {
+                        file.WriteLine(topic.Id);
+                        file.WriteLine(topic.Title);
+                        file.WriteLine(topic.Description);
+                        file.WriteLine(topic.EstimatedTimeToMaster);
+                        file.WriteLine(topic.TimeSpent);
+                        file.WriteLine(topic.Source);
+                        file.WriteLine(topic.StartLearningDate.ToShortDateString());
+                        file.WriteLine(topic.InProgress);
+                        file.WriteLine(topic.CompletionDate);
+                        file.WriteLine("");
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("This program did an oopsie:", ex);
+            }
+        }
+
+
 
         // Collecting data from user
         static Topic AddTopic()
@@ -125,6 +156,7 @@ namespace LearningDiaryJ
             string description = Console.ReadLine();
             return description;
         }
+
 
         public static double GetEstimatedTime()
         {
