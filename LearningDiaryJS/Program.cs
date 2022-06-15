@@ -11,8 +11,6 @@ namespace LearningDiaryJ
         {   
             // Defining file path
             List<Topic> topics = new List<Topic>();
-            string filePath = @"C:\Users\JaakkoSyrjämäki\source\repos\LearningDiaryJS\learningdiary.txt";
-            List<string> lines = File.ReadAllLines(filePath).ToList();
 
             // Asking user choice
             while (true)
@@ -41,17 +39,6 @@ namespace LearningDiaryJ
                     foreach (Topic topic in topics)
                     {
                         Console.WriteLine(topic);
-                        lines.Add(Convert.ToString(topic.Id));
-                        lines.Add(topic.Title);
-                        lines.Add(topic.Description);
-                        lines.Add(Convert.ToString(topic.EstimatedTimeToMaster));
-                        lines.Add(Convert.ToString(topic.TimeSpent));
-                        lines.Add(topic.Source);
-                        lines.Add(Convert.ToString(topic.StartLearningDate.ToShortDateString()));
-                        lines.Add(Convert.ToString(topic.InProgress));
-                        lines.Add(Convert.ToString(topic.CompletionDate.ToShortDateString()));
-                        lines.Add("");
-                        File.WriteAllLines(filePath, lines);
                     }
                 }
                 else if (userChoice == 1)
@@ -69,6 +56,8 @@ namespace LearningDiaryJ
             WriteToFile(topics, "learningdiaryaw.csv");
         }
 
+        // Saving collected data to csv file
+
         private static void WriteToFile(List<Topic> topics, string filepath)
         {
             try
@@ -85,7 +74,7 @@ namespace LearningDiaryJ
                         file.WriteLine(topic.Source);
                         file.WriteLine(topic.StartLearningDate.ToShortDateString());
                         file.WriteLine(topic.InProgress);
-                        file.WriteLine(topic.CompletionDate);
+                        file.WriteLine(topic.CompletionDate.ToShortDateString());
                         file.WriteLine("");
                     }
                 }
@@ -266,17 +255,7 @@ namespace LearningDiaryJ
                 {
                     Console.WriteLine("Topic found!");
                     Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine(topic.Id);
-                    Console.WriteLine(topic.Title);
-                    Console.WriteLine(topic.Description);
-                    Console.WriteLine(topic.EstimatedTimeToMaster);
-                    Console.WriteLine(topic.TimeSpent);
-                    Console.WriteLine(topic.Source);
-                    Console.WriteLine(topic.StartLearningDate);
-                    Console.WriteLine(topic.InProgress);
-                    Console.WriteLine(topic.CompletionDate);
-                    Console.WriteLine();
+                    Console.WriteLine(topic);
                     Console.WriteLine();
                     Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
                     Console.WriteLine();
