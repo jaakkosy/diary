@@ -50,7 +50,6 @@ namespace LearningDiaryJ
                 else if (userChoice == 3)
                 {
                     FindTopic(topics);
-                    Console.WriteLine("Testi");
                 }
             }
             WriteToFile(topics, "learningdiaryaw.csv");
@@ -69,6 +68,7 @@ namespace LearningDiaryJ
                         file.WriteLine(topic.Id);
                         file.WriteLine(topic.Title);
                         file.WriteLine(topic.Description);
+                        file.WriteLine("testi");
                         file.WriteLine(topic.EstimatedTimeToMaster);
                         file.WriteLine(topic.TimeSpent);
                         file.WriteLine(topic.Source);
