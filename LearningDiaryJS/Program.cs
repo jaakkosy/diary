@@ -18,7 +18,6 @@ namespace LearningDiaryJ
                 Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit topics or Choose 0 to quit.");
 
                 int userChoice;
-
                 try
                 {
                     userChoice = Convert.ToInt32(Console.ReadLine());
@@ -78,7 +77,6 @@ namespace LearningDiaryJ
                         file.WriteLine("");
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -86,22 +84,35 @@ namespace LearningDiaryJ
             }
         }
 
-
-
         // Collecting data from user
         static Topic AddTopic()
         {
-            
-            int id = GetId();
-            string title = GetTitle();
-            string description = GetDescription();
-            double estimatedTimeToMaster = GetEstimatedTime();
-            double timeSpent = GetTimeSpent();
-            string source = GetSource();
+            Console.WriteLine("Give topic id");
+            int id = GetIntInput();
+            Console.WriteLine("Give topic title:");
+            string title = GetStringInput();
+            Console.WriteLine("Give topic description");
+            string description = GetStringInput();
+            Console.WriteLine("Estimate time consumption in days to master subject:");
+            double estimatedTimeToMaster = GetDoubleInput();
+            Console.WriteLine("Enter the time spent in days:");
+            double timeSpent = GetDoubleInput();
+            Console.WriteLine("Give possible source:");
+            string source = GetStringInput();
+            Console.WriteLine("Enter the beginning time of the study in the format of YYYY-MM-DD:");
             DateTime startLearningDate = GetStartDate();
-            bool inProgress = GetProgress();
-            DateTime completionDate = GetCompletionDate(inProgress,timeSpent,estimatedTimeToMaster,startLearningDate);
-            
+            Console.WriteLine("Are you still studying? (yes/no)");
+            bool inProgress = GetBoolean();
+            DateTime completionDate = new DateTime();
+
+            if (inProgress == false)
+            {
+                completionDate = startLearningDate.AddDays(timeSpent);
+            }
+            else
+            {
+                completionDate = startLearningDate.AddDays(estimatedTimeToMaster);
+            }
             
             // giving collected data to class
             
@@ -111,23 +122,14 @@ namespace LearningDiaryJ
             return topicToAdd;
         }
 
-        public static string GetTitle()
+        public static int GetIntInput()
         {
-            Console.WriteLine("Give topic title:");
-            string title = Console.ReadLine();
-            return title;
-        }
-
-        public static int GetId()
-        {
-            int id;
-
+            int input;
             while (true)
             {
-                Console.WriteLine("Give topic id:");
                 try
                 {
-                    id = Convert.ToInt32(Console.ReadLine());
+                    input = Convert.ToInt32(Console.ReadLine());
                 }
                 catch (Exception)
                 {
@@ -136,26 +138,23 @@ namespace LearningDiaryJ
                 }
                 break;
             }
-            return id;
+            return input;
         }
 
-        public static string GetDescription()
+        public static string GetStringInput()
         {
-            Console.WriteLine("Give topic description:");
-            string description = Console.ReadLine();
-            return description;
+            string input = Console.ReadLine();
+            return input;
         }
 
-
-        public static double GetEstimatedTime()
+        public static double GetDoubleInput()
         {
-            double estimatedTimeToMaster;
+            double input;
             while (true)
             {
-                Console.WriteLine("Estimate time consumption in days to master subject:");
                 try
                 {
-                    estimatedTimeToMaster = Convert.ToDouble(Console.ReadLine());
+                    input = Convert.ToDouble(Console.ReadLine());
                 }
                 catch (Exception)
                 {
@@ -164,60 +163,30 @@ namespace LearningDiaryJ
                 }
                 break;
             }
-            return estimatedTimeToMaster;
-        }
-
-        public static string GetSource()
-        {
-            Console.WriteLine("Give possible source:");
-            string source = Console.ReadLine();
-            return source;
+            return input;
         }
 
         public static DateTime GetStartDate()
         {
-            DateTime startLearningDate = new DateTime();
+            DateTime date = new DateTime();
             while (true)
             {
                 try
                 {
-                    Console.WriteLine("Enter the beginning time of the study in the format of YYYY-MM-DD:");
-                    startLearningDate = Convert.ToDateTime(Console.ReadLine());
+                    date = Convert.ToDateTime(Console.ReadLine());
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Give input in correct form");
                     continue;
-
                 }
                 break;
             }
-            return startLearningDate;
+            return date;
         }
 
-        public static double GetTimeSpent()
+        public static bool GetBoolean()
         {
-            double timeSpent = 0;
-            while (true)
-            {
-                Console.WriteLine("Enter the time spent in days:");
-                try
-                {
-                    timeSpent = Convert.ToDouble(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
-                    continue;
-                }
-                break;
-            }
-            return timeSpent;
-        }
-
-        public static bool GetProgress()
-        {
-            Console.WriteLine("Are you still studying? (yes/no)");
             bool inProgress;
             string progressInput = Console.ReadLine();
             if (progressInput.ToLower() == "yes")
@@ -267,39 +236,43 @@ namespace LearningDiaryJ
 
                         if (whichField.ToLower() == "id")
                         {
-                            topic.Id = GetId();
+                            Console.WriteLine("Give new topic id");
+                            topic.Id = GetIntInput();
                         }
                         else if (whichField.ToLower() == "title")
                         {
-                            topic.Title = GetTitle();
+                            Console.WriteLine("Give new topic title:");
+                            topic.Title = GetStringInput();
                         }
                         else if (whichField.ToLower() == "description")
                         {
-                            topic.Description = GetDescription();
+                            Console.WriteLine("Give new topic description:");
+                            topic.Description = GetStringInput();
                         }
                         else if (whichField.ToLower() == "time consumption")
                         {
-                            topic.EstimatedTimeToMaster = GetEstimatedTime();
+                            Console.WriteLine("Estimate new time consumption in days to master subject:");
+                            topic.EstimatedTimeToMaster = GetDoubleInput();
                         }
                         else if (whichField.ToLower() == "source")
                         {
-                            topic.Source = GetSource();
+                            Console.WriteLine("Give new source:");
+                            topic.Source = GetStringInput();
                         }
                         else if (whichField.ToLower() == "beginning date")
                         {
+                            Console.WriteLine("Edit the beginning time of the study in the format of YYYY-MM-DD:");
                             topic.StartLearningDate = GetStartDate();
                         }
                         else if (whichField.ToLower() == "progress")
                         {
-                            topic.InProgress = GetProgress();
+                            Console.WriteLine("Are you still studying? (yes/no)");
+                            topic.InProgress = GetBoolean();
                         }
                         else if (whichField.ToLower() == "time spent")
                         {
-                            topic.TimeSpent = GetTimeSpent();
-                        }
-                        else if (whichField.ToLower() == "completion date")
-                        {
-                            topic.CompletionDate = GetCompletionDate(topic.InProgress,topic.TimeSpent,topic.EstimatedTimeToMaster,topic.StartLearningDate);
+                            Console.WriteLine("Edit the time spent in days:");
+                            topic.TimeSpent = GetDoubleInput();
                         }
                     }
                     else if (editOrDeleteQuestion == "d")

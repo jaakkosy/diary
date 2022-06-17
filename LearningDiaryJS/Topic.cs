@@ -36,7 +36,7 @@ namespace LearningDiaryJ
                                  "Title: {1}\n" +
                                  "Description: {2}\n" +
                                  "Estimated time to master: {3}\n" +
-                                 "Time spent: {4} hours\n" +
+                                 "Time spent: {4} days\n" +
                                  "Source material: {5}\n" +
                                  "Started learning: {6}\n" +
                                  "In progress: {7}\n" +
