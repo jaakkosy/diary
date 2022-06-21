@@ -1,6 +1,6 @@
 ﻿using System;
+using LearningDiaryJS.Models;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace LearningDiaryJ
@@ -17,16 +17,7 @@ namespace LearningDiaryJ
             {
                 Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit topics or Choose 0 to quit.");
 
-                int userChoice;
-                try
-                {
-                    userChoice = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form.");
-                    continue;
-                }
+                int userChoice = GetIntInput();
 
                 if (userChoice == 0)
                 {
@@ -52,7 +43,41 @@ namespace LearningDiaryJ
                 }
             }
             WriteToFile(topics, "learningdiaryaw.csv");
+
+
+           foreach (var topic in topics)
+            {
+                using (LearningDiaryContext testiYhteys = new LearningDiaryContext())
+                {
+                    var taulu = testiYhteys.Topics.Select(topikki => topikki);
+                    LearningDiaryJS.Models.Topic uusitopic = new LearningDiaryJS.Models.Topic()
+                    {
+                        Id = topic.Id,
+                        Title = topic.Title,
+                        Description = topic.Description,
+                        TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
+                        TimeSpent = Convert.ToInt32(topic.TimeSpent),
+                        Source = topic.Source,
+                        StartLearningDate = topic.StartLearningDate,
+                        InProgress = topic.InProgress
+                    };
+                    testiYhteys.Topics.Add(uusitopic);
+                    testiYhteys.SaveChanges();
+
+                    taulu = testiYhteys.Topics.Select(topikki => topikki);
+                    foreach (var rivi in taulu)
+                    {
+                        Console.WriteLine(rivi.Description);
+                    }
+                }
+            }
+
+
+          // Topic topic = new LearningDiaryJS.Models.Topic();
+
+
         }
+
 
         // Saving collected data to csv file
 
@@ -67,7 +92,6 @@ namespace LearningDiaryJ
                         file.WriteLine(topic.Id);
                         file.WriteLine(topic.Title);
                         file.WriteLine(topic.Description);
-                        file.WriteLine("testi");
                         file.WriteLine(topic.EstimatedTimeToMaster);
                         file.WriteLine(topic.TimeSpent);
                         file.WriteLine(topic.Source);
