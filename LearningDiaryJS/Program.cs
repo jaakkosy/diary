@@ -8,7 +8,7 @@ namespace LearningDiaryJ
     class Program
     {
         static void Main(string[] args)
-        {   
+        {
             // Defining file path
             List<Topic> topics = new List<Topic>();
 
@@ -39,16 +39,14 @@ namespace LearningDiaryJ
 
                 else if (userChoice == 3)
                 {
-                  //FindTopic(topics);
+                    //FindTopic(topics);
                     EditSqlTopic(topics);
                 }
             }
-            WriteToFile(topics, "learningdiaryaw.csv");
+            //WriteToFile(topics, "learningdiaryaw.csv");
             SaveToSql(topics);
 
-
-
-            static void SaveToSql(List<Topic>topics)
+            static void SaveToSql(List<Topic> topics)
             {
                 foreach (var topic in topics)
                 {
@@ -66,8 +64,8 @@ namespace LearningDiaryJ
                             StartLearningDate = topic.StartLearningDate,
                             InProgress = topic.InProgress,
                             CompletionDate = topic.CompletionDate
-
                         };
+
                         testConnection.Topics.Add(newtopic);
                         testConnection.SaveChanges();
 
@@ -80,53 +78,86 @@ namespace LearningDiaryJ
                 }
             }
 
-
-            static void EditSqlTopic(List<Topic>topics)
+            static void EditSqlTopic(List<Topic> topics)
             {
                 Console.WriteLine("Search for topics by Title:");
                 string titleSearch = Console.ReadLine();
-                Console.WriteLine("Aseta uusi arvo topicin kuvaukselle:");
-                var newValue = Console.ReadLine();
+
                 using (LearningDiaryContext testConnection = new LearningDiaryContext())
                 {
-                    var haettu = testConnection.Topics.Where(x => x.Title == titleSearch).Single();
-                    haettu.Description = newValue;
-                    testConnection.SaveChanges();
-                    Console.WriteLine("Onnistui!?");
-                }
-            }
-        }
+                    var search = testConnection.Topics.Where(x => x.Title == titleSearch).Single();
+                    Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
+                    string editOrDeleteQuestion = Console.ReadLine();
 
 
-        // Saving collected data to csv file
 
-        private static void WriteToFile(List<Topic> topics, string filepath)
-        {
-            try
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@filepath, true))
-                {
-                    foreach (var topic in topics)
+                    var std = (from i in testConnection.Topics where i.Title == titleSearch select i);
+
+                    foreach (var i in std)
                     {
-                        file.WriteLine(topic.Id);
-                        file.WriteLine(topic.Title);
-                        file.WriteLine(topic.Description);
-                        file.WriteLine(topic.EstimatedTimeToMaster);
-                        file.WriteLine(topic.TimeSpent);
-                        file.WriteLine(topic.Source);
-                        file.WriteLine(topic.StartLearningDate.ToShortDateString());
-                        file.WriteLine(topic.InProgress);
-                        file.WriteLine(topic.CompletionDate.ToShortDateString());
-                        file.WriteLine("");
+                        testConnection.Topics.Remove(i);
                     }
+
+
+                    if (editOrDeleteQuestion.ToLower() == "e")
+                    {
+                        Console.WriteLine("Which field would you like to edit?");
+                        string whichField = Console.ReadLine();
+
+
+                        if (whichField.ToLower() == "id")
+                        {
+                            Console.WriteLine("Give new topic id");
+                            search.Id = GetIntInput();
+                        }
+                        else if (whichField.ToLower() == "title")
+                        {
+                            Console.WriteLine("Give new topic title:");
+                            search.Title = GetStringInput();
+                        }
+                        else if (whichField.ToLower() == "description")
+                        {
+                            Console.WriteLine("Give new topic description:");
+                            search.Description = GetStringInput();
+                        }
+                        else if (whichField.ToLower() == "time consumption")
+                        {
+                            Console.WriteLine("Estimate new time consumption in days to master subject:");
+                            search.TimeToMaster = GetDoubleInput();
+                        }
+                        else if (whichField.ToLower() == "source")
+                        {
+                            Console.WriteLine("Give new source:");
+                            search.Source = GetStringInput();
+                        }
+                        else if (whichField.ToLower() == "beginning date")
+                        {
+                            Console.WriteLine("Edit the beginning time of the study in the format of YYYY-MM-DD:");
+                            search.StartLearningDate = GetStartDate();
+                        }
+                        else if (whichField.ToLower() == "progress")
+                        {
+                            Console.WriteLine("Are you still studying? (yes/no)");
+                            search.InProgress = GetBoolean();
+                        }
+                        else if (whichField.ToLower() == "time spent")
+                        {
+                            Console.WriteLine("Edit the time spent in days:");
+                            search.TimeSpent = GetDoubleInput();
+                        }
+                    }
+                    else if (editOrDeleteQuestion == "d")
+                    {
+                        Console.WriteLine("What number of diary note should be removed?");
+                        int testi = Convert.ToInt32(Console.ReadLine());
+                        topics.RemoveAt(testi);
+                    }
+                    testConnection.SaveChanges();
+                    Console.WriteLine("Saved!");
                 }
             }
-            catch (Exception ex)
-            {
-                throw new ApplicationException("This program did an oopsie:", ex);
-            }
         }
-
+    
         // Collecting data from user
         static Topic AddTopic()
         {
@@ -156,10 +187,10 @@ namespace LearningDiaryJ
             {
                 completionDate = startLearningDate.AddDays(estimatedTimeToMaster);
             }
-            
+
             // giving collected data to class
-            
-            Topic topicToAdd = new Topic(id, title, description, estimatedTimeToMaster, timeSpent, 
+
+            Topic topicToAdd = new Topic(id, title, description, estimatedTimeToMaster, timeSpent,
                 source, startLearningDate, inProgress, completionDate);
 
             return topicToAdd;
@@ -243,7 +274,7 @@ namespace LearningDiaryJ
             return inProgress;
         }
 
-        public static DateTime GetCompletionDate(bool inProgress,double timeSpent,double estimate,DateTime StartLearningDate)
+        public static DateTime GetCompletionDate(bool inProgress, double timeSpent, double estimate, DateTime StartLearningDate)
         {
             if (inProgress == false)
             {
@@ -256,77 +287,79 @@ namespace LearningDiaryJ
                 return completionEstimated;
             }
         }
-
-        public static void FindTopic(List<Topic> topics)
-        {
-            Console.WriteLine("Search for topics by ID:");
-            int idSearch = Convert.ToInt32(Console.ReadLine());
-            foreach (var topic in topics)
-            {
-                if (topic.Id == idSearch)
-                {
-                    Console.WriteLine("Topic found!");
-                    Console.WriteLine();
-                    Console.WriteLine(topic);
-                    Console.WriteLine();
-                    Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
-                    Console.WriteLine();
-                    string editOrDeleteQuestion = Console.ReadLine();
-                    if (editOrDeleteQuestion.ToLower() == "e")
-                    {
-                        Console.WriteLine("Which field would you like to edit?");
-                        string whichField = Console.ReadLine();
-
-                        if (whichField.ToLower() == "id")
-                        {
-                            Console.WriteLine("Give new topic id");
-                            topic.Id = GetIntInput();
-                        }
-                        else if (whichField.ToLower() == "title")
-                        {
-                            Console.WriteLine("Give new topic title:");
-                            topic.Title = GetStringInput();
-                        }
-                        else if (whichField.ToLower() == "description")
-                        {
-                            Console.WriteLine("Give new topic description:");
-                            topic.Description = GetStringInput();
-                        }
-                        else if (whichField.ToLower() == "time consumption")
-                        {
-                            Console.WriteLine("Estimate new time consumption in days to master subject:");
-                            topic.EstimatedTimeToMaster = GetDoubleInput();
-                        }
-                        else if (whichField.ToLower() == "source")
-                        {
-                            Console.WriteLine("Give new source:");
-                            topic.Source = GetStringInput();
-                        }
-                        else if (whichField.ToLower() == "beginning date")
-                        {
-                            Console.WriteLine("Edit the beginning time of the study in the format of YYYY-MM-DD:");
-                            topic.StartLearningDate = GetStartDate();
-                        }
-                        else if (whichField.ToLower() == "progress")
-                        {
-                            Console.WriteLine("Are you still studying? (yes/no)");
-                            topic.InProgress = GetBoolean();
-                        }
-                        else if (whichField.ToLower() == "time spent")
-                        {
-                            Console.WriteLine("Edit the time spent in days:");
-                            topic.TimeSpent = GetDoubleInput();
-                        }
-                    }
-                    else if (editOrDeleteQuestion == "d")
-                    {
-                        Console.WriteLine("What number of diary note should be removed?");
-                        int testi = Convert.ToInt32(Console.ReadLine());
-                        topics.RemoveAt(testi);
-                    }
-                    break;
-                }
-            }
-        }
     }
 }
+
+//        public static void FindTopic(List<Topic> topics)
+//        {
+//            Console.WriteLine("Search for topics by ID:");
+//            int idSearch = Convert.ToInt32(Console.ReadLine());
+//            foreach (var topic in topics)
+//            {
+//                if (topic.Id == idSearch)
+//                {
+//                    Console.WriteLine("Topic found!");
+//                    Console.WriteLine();
+//                    Console.WriteLine(topic);
+//                    Console.WriteLine();
+//                    Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
+//                    Console.WriteLine();
+//                    string editOrDeleteQuestion = Console.ReadLine();
+//                    if (editOrDeleteQuestion.ToLower() == "e")
+//                    {
+//                        Console.WriteLine("Which field would you like to edit?");
+//                        string whichField = Console.ReadLine();
+
+//                        if (whichField.ToLower() == "id")
+//                        {
+//                            Console.WriteLine("Give new topic id");
+//                            topic.Id = GetIntInput();
+//                        }
+//                        else if (whichField.ToLower() == "title")
+//                        {
+//                            Console.WriteLine("Give new topic title:");
+//                            topic.Title = GetStringInput();
+//                        }
+//                        else if (whichField.ToLower() == "description")
+//                        {
+//                            Console.WriteLine("Give new topic description:");
+//                            topic.Description = GetStringInput();
+//                        }
+//                        else if (whichField.ToLower() == "time consumption")
+//                        {
+//                            Console.WriteLine("Estimate new time consumption in days to master subject:");
+//                            topic.EstimatedTimeToMaster = GetDoubleInput();
+//                        }
+//                        else if (whichField.ToLower() == "source")
+//                        {
+//                            Console.WriteLine("Give new source:");
+//                            topic.Source = GetStringInput();
+//                        }
+//                        else if (whichField.ToLower() == "beginning date")
+//                        {
+//                            Console.WriteLine("Edit the beginning time of the study in the format of YYYY-MM-DD:");
+//                            topic.StartLearningDate = GetStartDate();
+//                        }
+//                        else if (whichField.ToLower() == "progress")
+//                        {
+//                            Console.WriteLine("Are you still studying? (yes/no)");
+//                            topic.InProgress = GetBoolean();
+//                        }
+//                        else if (whichField.ToLower() == "time spent")
+//                        {
+//                            Console.WriteLine("Edit the time spent in days:");
+//                            topic.TimeSpent = GetDoubleInput();
+//                        }
+//                    }
+//                    else if (editOrDeleteQuestion == "d")
+//                    {
+//                        Console.WriteLine("What number of diary note should be removed?");
+//                        int testi = Convert.ToInt32(Console.ReadLine());
+//                        topics.RemoveAt(testi);
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//}
