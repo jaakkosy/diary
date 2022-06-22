@@ -15,7 +15,7 @@ namespace LearningDiaryJ
             // Asking user choice
             while (true)
             {
-                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit topics or Choose 0 to quit.");
+                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit/delete topics or Choose 0 to quit.");
 
                 int userChoice = GetIntInput();
 
@@ -39,43 +39,62 @@ namespace LearningDiaryJ
 
                 else if (userChoice == 3)
                 {
-                    FindTopic(topics);
+                  //FindTopic(topics);
+                    EditSqlTopic(topics);
                 }
             }
             WriteToFile(topics, "learningdiaryaw.csv");
+            SaveToSql(topics);
 
 
-           foreach (var topic in topics)
+
+            static void SaveToSql(List<Topic>topics)
             {
-                using (LearningDiaryContext testiYhteys = new LearningDiaryContext())
+                foreach (var topic in topics)
                 {
-                    var taulu = testiYhteys.Topics.Select(topikki => topikki);
-                    LearningDiaryJS.Models.Topic uusitopic = new LearningDiaryJS.Models.Topic()
+                    using (LearningDiaryContext testConnection = new LearningDiaryContext())
                     {
-                        Id = topic.Id,
-                        Title = topic.Title,
-                        Description = topic.Description,
-                        TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
-                        TimeSpent = Convert.ToInt32(topic.TimeSpent),
-                        Source = topic.Source,
-                        StartLearningDate = topic.StartLearningDate,
-                        InProgress = topic.InProgress
-                    };
-                    testiYhteys.Topics.Add(uusitopic);
-                    testiYhteys.SaveChanges();
+                        var table = testConnection.Topics.Select(topic => topic);
+                        LearningDiaryJS.Models.Topic newtopic = new LearningDiaryJS.Models.Topic()
+                        {
+                            Id = topic.Id,
+                            Title = topic.Title,
+                            Description = topic.Description,
+                            TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
+                            TimeSpent = Convert.ToInt32(topic.TimeSpent),
+                            Source = topic.Source,
+                            StartLearningDate = topic.StartLearningDate,
+                            InProgress = topic.InProgress,
+                            CompletionDate = topic.CompletionDate
 
-                    taulu = testiYhteys.Topics.Select(topikki => topikki);
-                    foreach (var rivi in taulu)
-                    {
-                        Console.WriteLine(rivi.Description);
+                        };
+                        testConnection.Topics.Add(newtopic);
+                        testConnection.SaveChanges();
+
+                        table = testConnection.Topics.Select(topic => topic);
+                        foreach (var row in table)
+                        {
+                            Console.WriteLine(row.Description);
+                        }
                     }
                 }
             }
 
 
-          // Topic topic = new LearningDiaryJS.Models.Topic();
-
-
+            static void EditSqlTopic(List<Topic>topics)
+            {
+                Console.WriteLine("Search for topics by Title:");
+                string titleSearch = Console.ReadLine();
+                Console.WriteLine("Aseta uusi arvo topicin kuvaukselle:");
+                var newValue = Console.ReadLine();
+                using (LearningDiaryContext testConnection = new LearningDiaryContext())
+                {
+                    var haettu = testConnection.Topics.Where(x => x.Title == titleSearch).Single();
+                    haettu.Description = newValue;
+                    testConnection.SaveChanges();
+                    Console.WriteLine("Onnistui!?");
+                }
+            }
         }
 
 

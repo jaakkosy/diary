@@ -48,6 +48,9 @@ namespace LearningDiaryJS.Models
 
                 entity.Property(e => e.StartLearningDate).HasColumnType("datetime");
 
+                entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+
+
                 entity.Property(e => e.Title)
                     .IsRequired()
                     .HasMaxLength(255)
