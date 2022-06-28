@@ -68,6 +68,7 @@ namespace LearningDiaryJ
                         var table = testConnection.Topics.Select(topic => topic);
                         LearningDiaryJS.Models.Topic newtopic = new LearningDiaryJS.Models.Topic()
                         {
+
                             Title = topic.Title,
                             Description = topic.Description,
                             TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
