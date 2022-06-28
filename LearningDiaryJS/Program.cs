@@ -12,29 +12,21 @@ namespace LearningDiaryJ
         static void Main(string[] args)
         {
             List<Topic> topics = new List<Topic>();
-            
-            try
-            {
-                using (var testConnection = new LearningDiaryContext())
-                {
-                    var sqlId = testConnection.Topics.Max(topic => topic.Id);
-                    sqlId++;
-                    GlobalID = sqlId;
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("No topics found, starting with ID 1");
-            }
 
             // Asking user choice
             while (true)
             {
-                Console.WriteLine("Choose 1 to add a topic, Choose 2 to list topics, Choose 3 to edit/delete topics or Choose 0 to quit.");
+                Console.WriteLine("Choose 1 to add a topic\n" +
+                    "Choose 2 to list topics\n" +
+                    "Choose 3 to edit/delete topics\n" +
+                    "Choose 4 to save changes to database\n" +
+                    "Choose 5 to quit.");
+                    Console.WriteLine();
+                    Console.WriteLine();
 
                 int userChoice = GetIntInput();
 
-                if (userChoice == 0)
+                if (userChoice == 5)
                 {
                     break;
                 }
@@ -56,20 +48,26 @@ namespace LearningDiaryJ
                 {
                     EditSqlTopic(topics);
                 }
+
+                else if (userChoice == 4)
+                {
+                    SaveToSql(topics);
+                    Console.WriteLine("Topics added to database");
+
+                }
             }
-            //WriteToFile(topics, "learningdiaryaw.csv");
-            SaveToSql(topics);
 
             static void SaveToSql(List<Topic> topics)
             {
-                foreach (var topic in topics)
+
+                using (LearningDiaryContext testConnection = new LearningDiaryContext())
                 {
-                    using (LearningDiaryContext testConnection = new LearningDiaryContext())
-                    {
+                    foreach (var topic in topics)
+                    { 
+                       
                         var table = testConnection.Topics.Select(topic => topic);
                         LearningDiaryJS.Models.Topic newtopic = new LearningDiaryJS.Models.Topic()
                         {
-                            Id = topic.Id,
                             Title = topic.Title,
                             Description = topic.Description,
                             TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
@@ -79,9 +77,9 @@ namespace LearningDiaryJ
                             InProgress = topic.InProgress,
                             CompletionDate = topic.CompletionDate
                         };
-
                         testConnection.Topics.Add(newtopic);
                         testConnection.SaveChanges();
+
 
                         //table = testConnection.Topics.Select(topic => topic);
                         //foreach (var row in table)
@@ -95,15 +93,15 @@ namespace LearningDiaryJ
             static void EditSqlTopic(List<Topic> topics)
             {
                 Console.WriteLine("Search for topics by Title:");
-                string titleSearch = Console.ReadLine();
+                int titleSearch = Convert.ToInt32(Console.ReadLine());
 
                 using (LearningDiaryContext testConnection = new LearningDiaryContext())
                 {
-                    var search = testConnection.Topics.Where(x => x.Title == titleSearch).Single();
+                    var search = testConnection.Topics.Where(x => x.Id == titleSearch).Single();
                     Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
                     string editOrDeleteQuestion = Console.ReadLine();
 
-                    var std = (from i in testConnection.Topics where i.Title == titleSearch select i);
+                    var std = (from i in testConnection.Topics where i.Id == titleSearch select i);
 
 
                     if (editOrDeleteQuestion.ToLower() == "d")
@@ -165,11 +163,11 @@ namespace LearningDiaryJ
                 }
             }
         }
-    
+
         // Collecting data from user
         static Topic AddTopic()
         {
-            
+
             Console.WriteLine("Give topic title:");
             string title = GetStringInput();
             Console.WriteLine("Give topic description");
@@ -185,7 +183,7 @@ namespace LearningDiaryJ
             Console.WriteLine("Are you still studying? (yes/no)");
             bool inProgress = GetBoolean();
             DateTime completionDate = new DateTime();
-            
+
             if (inProgress == false)
             {
                 completionDate = startLearningDate.AddDays(timeSpent);
@@ -199,11 +197,15 @@ namespace LearningDiaryJ
 
             bool result = Aikataulu.ReadBoolMethod((float)estimatedTimeToMaster, (float)timeSpent);
 
-            Console.WriteLine(result);
+            if (result == false)
+            {
+                Console.WriteLine("Et ole aikataulussa!!");
+            }
+            
 
             // giving collected data to class
 
-            Topic topicToAdd = new Topic(GlobalID, title, description, estimatedTimeToMaster, timeSpent,
+            Topic topicToAdd = new Topic(title, description, estimatedTimeToMaster, timeSpent,
                 source, startLearningDate, inProgress, completionDate);
 
             return topicToAdd;
@@ -263,7 +265,7 @@ namespace LearningDiaryJ
             {
                 try
                 {
-                    date = Convert.ToDateTime(Console.ReadLine()); 
+                    date = Convert.ToDateTime(Console.ReadLine());
                     bool dateValidation = Aikataulu.ReadBoolMethod2(date);
                     if (dateValidation == false)
                     {
@@ -315,4 +317,3 @@ namespace LearningDiaryJ
         }
     }
 }
-

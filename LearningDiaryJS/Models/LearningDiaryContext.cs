@@ -36,8 +36,6 @@ namespace LearningDiaryJS.Models
             {
                 entity.ToTable("Topic");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.CompletionDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Description)
