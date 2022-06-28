@@ -93,15 +93,15 @@ namespace LearningDiaryJ
             static void EditSqlTopic(List<Topic> topics)
             {
                 Console.WriteLine("Search for topics by Title:");
-                int titleSearch = Convert.ToInt32(Console.ReadLine());
+                string titleSearch = Console.ReadLine();
 
                 using (LearningDiaryContext testConnection = new LearningDiaryContext())
                 {
-                    var search = testConnection.Topics.Where(x => x.Id == titleSearch).Single();
+                    var search = testConnection.Topics.Where(x => x.Title == titleSearch).Single();
                     Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
                     string editOrDeleteQuestion = Console.ReadLine();
 
-                    var std = (from i in testConnection.Topics where i.Id == titleSearch select i);
+                    var std = (from i in testConnection.Topics where i.Title == titleSearch select i);
 
 
                     if (editOrDeleteQuestion.ToLower() == "d")
