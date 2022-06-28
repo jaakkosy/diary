@@ -38,6 +38,8 @@ namespace LearningDiaryJS.Models
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.CompletionDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Description)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -47,9 +49,6 @@ namespace LearningDiaryJS.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.StartLearningDate).HasColumnType("datetime");
-
-                entity.Property(e => e.CompletionDate).HasColumnType("datetime");
-
 
                 entity.Property(e => e.Title)
                     .IsRequired()
