@@ -8,7 +8,6 @@ namespace LearningDiaryJ
 {
     class Program
     {
-        public static int GlobalID = 1;
         static void Main(string[] args)
         {
             List<Topic> topics = new List<Topic>();
@@ -16,44 +15,41 @@ namespace LearningDiaryJ
             // Asking user choice
             while (true)
             {
-                Console.WriteLine("Choose 1 to add a topic\n" +
-                    "Choose 2 to list topics\n" +
-                    "Choose 3 to edit/delete topics\n" +
-                    "Choose 4 to save changes to database\n" +
-                    "Choose 5 to quit.");
+                Console.WriteLine("Choose 1 to add a topic to database\n" +
+                    "Choose 2 to list current titles and descriptions from database\n" +
+                    "Choose 3 to edit/delete topics in database\n" +
+                    "Choose 4 to quit.");
                     Console.WriteLine();
                     Console.WriteLine();
 
                 int userChoice = GetIntInput();
 
-                if (userChoice == 5)
+                if (userChoice == 4)
                 {
                     break;
                 }
 
                 else if (userChoice == 2)
                 {
-                    foreach (Topic topic in topics)
+                    using (LearningDiaryContext testConnection = new LearningDiaryContext())
                     {
-                        Console.WriteLine(topic);
+                        var tablePrint = testConnection.Topics.Select(topic => topic);
+                        foreach (var row in tablePrint)
+                        {
+                            Console.WriteLine(row.Title + " " + row.Description);
+                        }
+                        Console.WriteLine();
                     }
                 }
                 else if (userChoice == 1)
                 {
                     topics.Add(AddTopic());
-                    Console.WriteLine("Topic added to list.");
+                    SaveToSql(topics);
                 }
 
                 else if (userChoice == 3)
                 {
-                    EditSqlTopic(topics);
-                }
-
-                else if (userChoice == 4)
-                {
-                    SaveToSql(topics);
-                    Console.WriteLine("Topics added to database");
-
+                    EditSqlTopic();
                 }
             }
 
@@ -64,11 +60,9 @@ namespace LearningDiaryJ
                 {
                     foreach (var topic in topics)
                     { 
-                       
                         var table = testConnection.Topics.Select(topic => topic);
                         LearningDiaryJS.Models.Topic newtopic = new LearningDiaryJS.Models.Topic()
                         {
-
                             Title = topic.Title,
                             Description = topic.Description,
                             TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
@@ -80,18 +74,17 @@ namespace LearningDiaryJ
                         };
                         testConnection.Topics.Add(newtopic);
                         testConnection.SaveChanges();
+                    }
 
-
-                        //table = testConnection.Topics.Select(topic => topic);
-                        //foreach (var row in table)
-                        //{
-                        //    Console.WriteLine(row.Description);
-                        //}
+                    var tablePrint = testConnection.Topics.Select(topic => topic);
+                    foreach (var row in tablePrint)
+                    {
+                        Console.WriteLine(row.Title + "-" + row.Description);
                     }
                 }
             }
 
-            static void EditSqlTopic(List<Topic> topics)
+            static void EditSqlTopic()
             {
                 Console.WriteLine("Search for topics by Title:");
                 string titleSearch = Console.ReadLine();
@@ -168,7 +161,6 @@ namespace LearningDiaryJ
         // Collecting data from user
         static Topic AddTopic()
         {
-
             Console.WriteLine("Give topic title:");
             string title = GetStringInput();
             Console.WriteLine("Give topic description");
@@ -202,7 +194,6 @@ namespace LearningDiaryJ
             {
                 Console.WriteLine("Et ole aikataulussa!!");
             }
-            
 
             // giving collected data to class
 
@@ -248,7 +239,7 @@ namespace LearningDiaryJ
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Give input in correct form (be careful with ',' and '.')");
+                    Console.WriteLine("Give input in correct form");
                     continue;
                 }
                 break;
@@ -301,20 +292,6 @@ namespace LearningDiaryJ
                 inProgress = false;
             }
             return inProgress;
-        }
-
-        public static DateTime GetCompletionDate(bool inProgress, double timeSpent, double estimate, DateTime StartLearningDate)
-        {
-            if (inProgress == false)
-            {
-                var completionDate = StartLearningDate.AddDays(timeSpent);
-                return completionDate;
-            }
-            else
-            {
-                var completionEstimated = StartLearningDate.AddDays(estimate);
-                return completionEstimated;
-            }
         }
     }
 }

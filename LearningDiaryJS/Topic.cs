@@ -33,7 +33,7 @@ namespace LearningDiaryJ
             return string.Format(
                                  "Title: {0}\n" +
                                  "Description: {1}\n" +
-                                 "Estimated time to master: {2}\n" +
+                                 "Estimated time to master: {2} days\n" +
                                  "Time spent: {3} days\n" +
                                  "Source material: {4}\n" +
                                  "Started learning: {5}\n" +
