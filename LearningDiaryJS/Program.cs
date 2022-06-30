@@ -1,8 +1,8 @@
-﻿using ClassLibraryJA;
-using LearningDiaryJS.Models;
+﻿using LearningDiaryJS.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static LearningDiaryJS.UserInputs;
 
 
 namespace LearningDiaryJS
@@ -136,7 +136,6 @@ namespace LearningDiaryJS
 
             using (LearningDiaryContext testConnection = new LearningDiaryContext())
             {
-
                 while (true)
                 {
                     if (ListSqlTopicsVerify(titleSearch))
@@ -148,7 +147,6 @@ namespace LearningDiaryJS
                     titleSearch = Console.ReadLine();
                 }
 
-
                 ListSqlTopicsVerify(titleSearch);
 
                 var search = testConnection.Topics.FirstOrDefault(x => x.Title == titleSearch);
@@ -157,7 +155,6 @@ namespace LearningDiaryJS
                 string editOrDeleteQuestion = Console.ReadLine();
 
                 var tpc = (from i in testConnection.Topics where i.Title == titleSearch select i);
-
 
                 if (editOrDeleteQuestion.ToLower() == "d")
                 {
@@ -202,88 +199,11 @@ namespace LearningDiaryJS
                             Console.WriteLine("Edit the time spent in days:");
                             search.TimeSpent = GetDoubleInput();
                             break;
-
                     }
                     Console.WriteLine("Saved!");
                 }
-
                 testConnection.SaveChanges();
             }
-        }
-
-        public static int GetIntInput()
-        {
-            int input;
-            while (true)
-            {
-                try
-                {
-                    input = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form");
-                    continue;
-                }
-                break;
-            }
-            return input;
-        }
-
-        public static string GetStringInput()
-        {
-            string input = Console.ReadLine();
-            return input;
-        }
-
-        public static double GetDoubleInput()
-        {
-            double input;
-            while (true)
-            {
-                try
-                {
-                    input = Convert.ToDouble(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form");
-                    continue;
-                }
-                break;
-            }
-            return input;
-        }
-
-
-        public static DateTime GetStartDate()
-        {
-            var aikataulu = new Aikataulussa();
-
-            DateTime date = new DateTime();
-            while (true)
-            {
-                try
-                {
-                    date = Convert.ToDateTime(Console.ReadLine());
-                    bool dateValidation = aikataulu.ReadBoolMethod2(date);
-                    Console.WriteLine(dateValidation == true ? "It works! Date is valid!" : "Invalid date");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form");
-                    continue;
-                }
-                break;
-            }
-            return date;
-        }
-
-        public static bool GetBoolean()
-        {
-            string progressInput = Console.ReadLine();
-            var inProgress = progressInput != null && progressInput.ToLower() == "yes";
-            return inProgress;
         }
     }
 }
