@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LearningDiaryJ
+namespace LearningDiaryJS
 {
     class Topic
     {
