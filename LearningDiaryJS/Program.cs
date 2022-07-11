@@ -5,7 +5,6 @@ using System.Linq;
 using static LearningDiaryJS.UserInputs;
 using System.Diagnostics;
 using System.Threading;
-using System.Xml;
 
 
 namespace LearningDiaryJS
@@ -26,9 +25,6 @@ namespace LearningDiaryJS
 
         static void Main(string[] args)
         {
-            List<Topic> topics = new List<Topic>();
-
-
 
             // Asking user choice
             while (true)
@@ -51,15 +47,14 @@ namespace LearningDiaryJS
                 switch (userChoice)
                 {
                     case 1:
-                        topics.Add(AddTopic());
-                        SaveToSql(topics);
-                        topics.Clear();
+                        SaveToSql(AddTopic());
                         break;
                     case 2:
                         Console.Clear();
                         ListSqlTopics();
                         break;
                     case 3:
+                        Console.Clear();
                         EditSqlTopic();
                         break;
                 }
@@ -79,7 +74,7 @@ namespace LearningDiaryJS
             double timeSpent = GetDoubleInput();
             Console.WriteLine("Give possible source:");
             string source = GetStringInput();
-            Console.WriteLine("Enter the beginning time of the study in the format of YYYY-MM-DD:");
+            Console.WriteLine("Enter the beginning time of the study in the format of dd.mm.yyyy:");
             DateTime startLearningDate = GetStartDate();
             Console.WriteLine("Are you still studying? (yes/no)");
             bool inProgress = GetBoolean();
@@ -88,19 +83,18 @@ namespace LearningDiaryJS
 
             // giving collected data to class
 
-            Topic topicToAdd = new Topic(title, description, estimatedTimeToMaster, timeSpent,
+            Topic topic = new Topic(title, description, estimatedTimeToMaster, timeSpent,
                 source, startLearningDate, inProgress, completionDate);
 
-            return topicToAdd;
+            return topic;
         }
 
-        static void SaveToSql(List<Topic> topics)
+        static void SaveToSql(Topic topic)
         {
 
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
-                foreach (var topic in topics)
-                {
+                
                     var newTopic = new LearningDiaryJS.Models.Topic()
                     {
                         Title = topic.Title,
@@ -114,13 +108,11 @@ namespace LearningDiaryJS
                     };
                     db.Topics.Add(newTopic);
                     db.SaveChanges();
-                }
             }
         }
 
         static void ListSqlTopics()
         {
-
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
                 Stopwatch stopWatch = new Stopwatch();
@@ -159,7 +151,6 @@ namespace LearningDiaryJS
                     {
                         Console.WriteLine("Topic not found, search again"!);
                         titleSearch = Console.ReadLine();
-                        
                     }
                     else
                     {
@@ -193,31 +184,31 @@ namespace LearningDiaryJS
                     {
                         case UserSelection.Title:
                             Console.WriteLine("Give new topic title:");
-                            if (search != null) search.Title = GetStringInput();
+                            search.Title = GetStringInput();
                             break;
                         case UserSelection.Description:
                             Console.WriteLine("Give new topic description:");
-                            if (search != null) search.Description = GetStringInput();
+                            search.Description = GetStringInput();
                             break;
                         case UserSelection.Estimate:
                             Console.WriteLine("Estimate new time consumption in days to master subject:");
-                            if (search != null) search.TimeToMaster = GetDoubleInput();
+                            search.TimeToMaster = GetDoubleInput();
                             break;
                         case UserSelection.TimeSpent:
                             Console.WriteLine("Give new time spent value");
-                            if (search != null) search.TimeSpent = GetDoubleInput();
+                            search.TimeSpent = GetDoubleInput();
                             break;
                         case UserSelection.Source:
                             Console.WriteLine("Give new source:");
-                            if (search != null) search.Source = GetStringInput();
+                            search.Source = GetStringInput();
                             break;
                         case UserSelection.StartDate:
                             Console.WriteLine("Edit the beginning time of the study in the format of dd.mm.yyyy");
-                            if (search != null) search.StartLearningDate = GetStartDate();
+                            search.StartLearningDate = GetStartDate();
                             break;
                         case UserSelection.Progress:
                             Console.WriteLine("Are you still studying? (yes/no)");
-                            if (search != null) search.InProgress = GetBoolean();
+                            search.InProgress = GetBoolean();
                             break;
                     }
                     Console.Clear();
