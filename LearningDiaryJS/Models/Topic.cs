@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LearningDiaryJS.Models
 {
-    public partial class Topic
+    public class Topic
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -59,21 +59,18 @@ namespace LearningDiaryJS
             while (true)
             {
                 string str = Console.ReadLine();
-                if (String.IsNullOrWhiteSpace(str)) continue;
+                try
                 {
-                    try
-                    {
-                        var dtParser = str.Split('.');
-                        Console.Clear();
-                        return new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),
-                            Convert.ToInt32(dtParser[0]));
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("Not a valid date! Use dd.mm.yyyy...");
-                        Console.ReadKey();
-                        Console.Clear();
-                    }
+                    string[] dtParser;
+                    dtParser = str.Split('.');
+                    Console.Clear();
+                    return new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),Convert.ToInt32(dtParser[0]));
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Not a valid date! Use dd.mm.yyyy...");
+                    Console.ReadKey();
+                    Console.Clear();
                 }
             }
         }

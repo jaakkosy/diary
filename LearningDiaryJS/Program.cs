@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static LearningDiaryJS.UserInputs;
+using System.Diagnostics;
+using System.Threading;
+using System.Xml;
 
 
 namespace LearningDiaryJS
@@ -24,6 +27,8 @@ namespace LearningDiaryJS
         static void Main(string[] args)
         {
             List<Topic> topics = new List<Topic>();
+
+
 
             // Asking user choice
             while (true)
@@ -92,7 +97,7 @@ namespace LearningDiaryJS
         static void SaveToSql(List<Topic> topics)
         {
 
-            using (LearningDiaryContext testConnection = new LearningDiaryContext())
+            using (LearningDiaryContext db = new LearningDiaryContext())
             {
                 foreach (var topic in topics)
                 {
@@ -107,77 +112,72 @@ namespace LearningDiaryJS
                         InProgress = topic.InProgress,
                         CompletionDate = topic.CompletionDate
                     };
-                    testConnection.Topics.Add(newTopic);
-                    testConnection.SaveChanges();
+                    db.Topics.Add(newTopic);
+                    db.SaveChanges();
                 }
             }
         }
 
         static void ListSqlTopics()
         {
-            using (LearningDiaryContext testConnection = new LearningDiaryContext())
+
+            using (LearningDiaryContext db = new LearningDiaryContext())
             {
-                var tablePrint = testConnection.Topics.Select(topic => topic);
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                var tablePrint = db.Topics.Select(topic => topic);
                 foreach (var row in tablePrint)
                 {
                     Console.WriteLine(row.Title + " " + row.Description);
                 }
                 Console.WriteLine();
-            }
-        }
-
-        static bool ListSqlTopicsVerify(string titleSearch)
-        {
-            using (LearningDiaryContext testConnection = new LearningDiaryContext())
-            {
-                var tablePrint = testConnection.Topics.Select(topic => topic);
-                foreach (var row in tablePrint)
-                {
-                    if (row.Title == titleSearch)
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                Console.WriteLine("RunTime " + elapsedTime);
             }
         }
 
         static void EditSqlTopic()
         {
             Console.WriteLine("Search for topics by Title:");
-            string titleSearch = Console.ReadLine();
 
-            using (LearningDiaryContext testConnection = new LearningDiaryContext())
+            using (LearningDiaryContext db = new LearningDiaryContext())
             {
+
+                string titleSearch = Console.ReadLine();
+                Models.Topic search;
+
                 while (true)
                 {
-                    if (ListSqlTopicsVerify(titleSearch))
+                    search = db.Topics.FirstOrDefault(x => x.Title == titleSearch);
+
+                    if (search == null)
+                    {
+                        Console.WriteLine("Topic not found, search again"!);
+                        titleSearch = Console.ReadLine();
+                        
+                    }
+                    else
                     {
                         break;
                     }
-                    Console.WriteLine("Topic not found! Please try again!");
-                    Console.WriteLine("Search for topics by Title:");
-                    titleSearch = Console.ReadLine();
                 }
 
-                var search = testConnection.Topics.FirstOrDefault(x => x.Title == titleSearch);
-                
                 Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
-                string editOrDeleteQuestion = Console.ReadLine();
+                string editOrDeleteQuestion = GetStringInput().ToLower();
 
-                var tpc = (from i in testConnection.Topics where i.Title == titleSearch select i);
 
-                if (editOrDeleteQuestion != null && editOrDeleteQuestion.ToLower() == "d")
+                if (editOrDeleteQuestion.ToLower() == "d")
                 {
-                    foreach (var i in tpc)
-                    {
-                        testConnection.Topics.Remove(i);
-                        Console.Clear();
-                        Console.WriteLine("Topic deleted!");
-                    }
+                    db.Topics.Remove(search);
+                    Console.WriteLine("Topic deleted!");
                 }
 
-                if (editOrDeleteQuestion != null && editOrDeleteQuestion.ToLower() == "e")
+                if (editOrDeleteQuestion.ToLower() == "e")
                 {
                     Console.Clear();
                     Console.WriteLine("Choose 0 to edit topic title"); 
@@ -222,7 +222,7 @@ namespace LearningDiaryJS
                     }
                     Console.Clear();
                 }
-                testConnection.SaveChanges();
+                db.SaveChanges();
             }
         }
     }
