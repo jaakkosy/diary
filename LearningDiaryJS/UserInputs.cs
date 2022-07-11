@@ -55,25 +55,27 @@ namespace LearningDiaryJS
 
         public static DateTime GetStartDate()
         {
-            var aikataulu = new Aikataulussa();
 
-            DateTime date = new DateTime();
             while (true)
             {
-                try
+                string str = Console.ReadLine();
+                if (String.IsNullOrWhiteSpace(str)) continue;
                 {
-                    date = Convert.ToDateTime(Console.ReadLine());
-                    bool dateValidation = aikataulu.ReadBoolMethod2(date);
-                    Console.WriteLine(dateValidation == true ? "Date is in future!" : "Date is in past!");
+                    try
+                    {
+                        var dtParser = str.Split('.');
+                        Console.Clear();
+                        return new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),
+                            Convert.ToInt32(dtParser[0]));
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Not a valid date! Use dd.mm.yyyy...");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
                 }
-                catch (Exception)
-                {
-                    Console.WriteLine("Give input in correct form");
-                    continue;
-                }
-                break;
             }
-            return date;
         }
 
         public static bool GetBoolean()

@@ -9,6 +9,18 @@ namespace LearningDiaryJS
 {
     class Program
     {
+
+        enum UserSelection
+        {
+            Title,
+            Description,
+            Estimate,
+            TimeSpent,
+            Source,
+            StartDate,
+            Progress
+        };
+
         static void Main(string[] args)
         {
             List<Topic> topics = new List<Topic>();
@@ -39,6 +51,7 @@ namespace LearningDiaryJS
                         topics.Clear();
                         break;
                     case 2:
+                        Console.Clear();
                         ListSqlTopics();
                         break;
                     case 3:
@@ -147,8 +160,6 @@ namespace LearningDiaryJS
                     titleSearch = Console.ReadLine();
                 }
 
-                ListSqlTopicsVerify(titleSearch);
-
                 var search = testConnection.Topics.FirstOrDefault(x => x.Title == titleSearch);
                 
                 Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
@@ -156,51 +167,60 @@ namespace LearningDiaryJS
 
                 var tpc = (from i in testConnection.Topics where i.Title == titleSearch select i);
 
-                if (editOrDeleteQuestion.ToLower() == "d")
+                if (editOrDeleteQuestion != null && editOrDeleteQuestion.ToLower() == "d")
                 {
                     foreach (var i in tpc)
                     {
                         testConnection.Topics.Remove(i);
+                        Console.Clear();
+                        Console.WriteLine("Topic deleted!");
                     }
                 }
 
-                if (editOrDeleteQuestion.ToLower() == "e")
+                if (editOrDeleteQuestion != null && editOrDeleteQuestion.ToLower() == "e")
                 {
-                    Console.WriteLine("Which field would you like to edit?");
-                    string whichField = Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("Choose 0 to edit topic title"); 
+                    Console.WriteLine("Choose 1 to edit topic description"); 
+                    Console.WriteLine("Choose 2 to edit estimated time consumption"); 
+                    Console.WriteLine("Choose 3 to edit time spent"); 
+                    Console.WriteLine("Choose 4 to edit source of learning"); 
+                    Console.WriteLine("Choose 5 to edit start date of studying");
+                    Console.WriteLine("Choose 6 to edit progress status");
+                    int whichField = GetIntInput();
 
-                    switch (whichField.ToLower())
+                    switch ((UserSelection)(whichField))
                     {
-                        case "title":
+                        case UserSelection.Title:
                             Console.WriteLine("Give new topic title:");
-                            search.Title = GetStringInput();
+                            if (search != null) search.Title = GetStringInput();
                             break;
-                        case "description":
+                        case UserSelection.Description:
                             Console.WriteLine("Give new topic description:");
-                            search.Description = GetStringInput();
+                            if (search != null) search.Description = GetStringInput();
                             break;
-                        case "time consumption":
+                        case UserSelection.Estimate:
                             Console.WriteLine("Estimate new time consumption in days to master subject:");
-                            search.TimeToMaster = GetDoubleInput();
+                            if (search != null) search.TimeToMaster = GetDoubleInput();
                             break;
-                        case "source":
+                        case UserSelection.TimeSpent:
+                            Console.WriteLine("Give new time spent value");
+                            if (search != null) search.TimeSpent = GetDoubleInput();
+                            break;
+                        case UserSelection.Source:
                             Console.WriteLine("Give new source:");
-                            search.Source = GetStringInput();
+                            if (search != null) search.Source = GetStringInput();
                             break;
-                        case "beginning date":
-                            Console.WriteLine("Edit the beginning time of the study in the format of YYYY-MM-DD:");
-                            search.StartLearningDate = GetStartDate();
+                        case UserSelection.StartDate:
+                            Console.WriteLine("Edit the beginning time of the study in the format of dd.mm.yyyy");
+                            if (search != null) search.StartLearningDate = GetStartDate();
                             break;
-                        case "progress":
+                        case UserSelection.Progress:
                             Console.WriteLine("Are you still studying? (yes/no)");
-                            search.InProgress = GetBoolean();
-                            break;
-                        case "time spent":
-                            Console.WriteLine("Edit the time spent in days:");
-                            search.TimeSpent = GetDoubleInput();
+                            if (search != null) search.InProgress = GetBoolean();
                             break;
                     }
-                    Console.WriteLine("Saved!");
+                    Console.Clear();
                 }
                 testConnection.SaveChanges();
             }
