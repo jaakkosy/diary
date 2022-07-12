@@ -127,28 +127,10 @@ namespace LearningDiaryJS
 
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
-
-                string titleSearch = Console.ReadLine();
-                Models.Topic search;
-
-                while (true)
-                {
-                    search = db.Topics.FirstOrDefault(x => x.Title == titleSearch);
-
-                    if (search == null)
-                    {
-                        Console.WriteLine("Topic not found, search again"!);
-                        titleSearch = Console.ReadLine();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                var search = SearchForTopic(db);
 
                 Console.WriteLine("Would you like to edit fields(e) or delete topic(d)?");
                 string editOrDeleteQuestion = GetStringInput().ToLower();
-
 
                 if (editOrDeleteQuestion == "d")
                 {
@@ -202,6 +184,20 @@ namespace LearningDiaryJS
                     Console.Clear();
                 }
                 db.SaveChanges();
+            }
+        }
+        private static Models.Topic SearchForTopic(LearningDiaryContext db)
+        {
+            while (true)
+            {
+                Console.WriteLine("Search for topic by Title:");
+                string titleSearch = Console.ReadLine();
+                Models.Topic search = db.Topics.FirstOrDefault(x => x.Title == titleSearch);
+                if (search != null)
+                {
+                    return search;
+                }
+                Console.WriteLine("Topic not found, search again!");
             }
         }
     }
