@@ -86,7 +86,7 @@ namespace LearningDiaryJS
             Topic topic = new Topic(title, description, estimatedTimeToMaster, timeSpent,
                 source, startLearningDate, inProgress, completionDate);
 
-            return topic;
+            return topic ;
         }
 
         static void SaveToSql(Topic topic)
@@ -95,11 +95,11 @@ namespace LearningDiaryJS
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
                 
-                    var newTopic = new LearningDiaryJS.Models.Topic()
+                    var newTopic = new Topic
                     {
                         Title = topic.Title,
                         Description = topic.Description,
-                        TimeToMaster = Convert.ToInt32(topic.EstimatedTimeToMaster),
+                        TimeToMaster = Convert.ToInt32(topic.TimeToMaster),
                         TimeSpent = Convert.ToInt32(topic.TimeSpent),
                         Source = topic.Source,
                         StartLearningDate = topic.StartLearningDate,
