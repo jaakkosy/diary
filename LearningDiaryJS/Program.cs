@@ -94,20 +94,8 @@ namespace LearningDiaryJS
 
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
-                
-                    var newTopic = new Topic
-                    {
-                        Title = topic.Title,
-                        Description = topic.Description,
-                        TimeToMaster = Convert.ToInt32(topic.TimeToMaster),
-                        TimeSpent = Convert.ToInt32(topic.TimeSpent),
-                        Source = topic.Source,
-                        StartLearningDate = topic.StartLearningDate,
-                        InProgress = topic.InProgress,
-                        CompletionDate = topic.CompletionDate
-                    };
-                    db.Topics.Add(newTopic);
-                    db.SaveChanges();
+                db.Topics.Add(topic);
+                db.SaveChanges();
             }
         }
 
@@ -162,13 +150,13 @@ namespace LearningDiaryJS
                 string editOrDeleteQuestion = GetStringInput().ToLower();
 
 
-                if (editOrDeleteQuestion.ToLower() == "d")
+                if (editOrDeleteQuestion == "d")
                 {
                     db.Topics.Remove(search);
                     Console.WriteLine("Topic deleted!");
                 }
 
-                if (editOrDeleteQuestion.ToLower() == "e")
+                if (editOrDeleteQuestion == "e")
                 {
                     Console.Clear();
                     Console.WriteLine("Choose 0 to edit topic title"); 
