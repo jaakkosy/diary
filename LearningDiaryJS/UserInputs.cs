@@ -64,7 +64,10 @@ namespace LearningDiaryJS
                     string[] dtParser;
                     dtParser = str.Split('.');
                     Console.Clear();
-                    return new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),Convert.ToInt32(dtParser[0]));
+                    var startDate = new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),Convert.ToInt32(dtParser[0]));
+                    var sqlMinimum = new DateTime(1753, 01, 01);
+                    if (startDate > sqlMinimum) return startDate;
+                    Console.WriteLine("Date is too far away in the past for SQL, enter date again!");
                 }
                 catch (Exception)
                 {
