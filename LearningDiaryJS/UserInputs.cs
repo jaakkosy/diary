@@ -63,7 +63,6 @@ namespace LearningDiaryJS
                 {
                     string[] dtParser;
                     dtParser = str.Split('.');
-                    Console.Clear();
                     var startDate = new DateTime(Convert.ToInt32(dtParser[2]), Convert.ToInt32(dtParser[1]),Convert.ToInt32(dtParser[0]));
                     var sqlMinimum = new DateTime(1753, 01, 01);
                     if (startDate > sqlMinimum) return startDate;
@@ -72,8 +71,6 @@ namespace LearningDiaryJS
                 catch (Exception)
                 {
                     Console.WriteLine("Not a valid date! Use dd.mm.yyyy...");
-                    Console.ReadKey();
-                    Console.Clear();
                 }
             }
         }

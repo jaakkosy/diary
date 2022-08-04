@@ -5,6 +5,7 @@ using System.Linq;
 using static LearningDiaryJS.UserInputs;
 using System.Diagnostics;
 using System.Threading;
+using ClassLibraryJA;
 
 
 namespace LearningDiaryJS
@@ -77,8 +78,17 @@ namespace LearningDiaryJS
             Console.WriteLine("Enter the beginning time of the study in the format of dd.mm.yyyy:");
             DateTime startLearningDate = GetStartDate();
             Console.WriteLine("Are you still studying? (yes/no)");
-            bool inProgress = GetBoolean();
             DateTime completionDate = new DateTime();
+
+            Aikataulussa aikataulu = new Aikataulussa();
+            bool dateValidation = aikataulu.ReadBoolMethod2(startLearningDate);
+            if (dateValidation == false) {
+                Console.WriteLine("Starting date is in past");
+            } else {
+               Console.WriteLine("Starting date is in future");
+            }
+            bool inProgress = GetBoolean();
+
             completionDate = startLearningDate.AddDays(inProgress == false ? timeSpent : estimatedTimeToMaster);
 
             // giving collected data to class
@@ -123,7 +133,6 @@ namespace LearningDiaryJS
 
         static void EditSqlTopic()
         {
-            Console.WriteLine("Search for topics by Title:");
 
             using (LearningDiaryContext db = new LearningDiaryContext())
             {
